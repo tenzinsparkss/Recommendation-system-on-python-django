@@ -1,7 +1,7 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
 from .models import Book, Category, Myrating
 from django.contrib.auth.forms import UserCreationForm
-from  .forms import CreateUserForm
+from  .forms import CreateUserForm, EditUserProfileForm
 from django.db.models import Q
 from django.contrib import messages
 from django.contrib.auth.models import User, auth
@@ -137,7 +137,20 @@ def logout_user(request):
 def index(request):
     return render(request, 'index.html', {})
 
+
 #User profile
+@login_required(login_url='login')
 def profile_page(request):
-    return(request, 'profile.html', {})
+    if request.user.is_authenticated:
+        if request.method == "POST":
+            profile = EditUserProfileForm(request.POST, instance = request.user)
+            if profile.is_valid():
+                messages.success(request, 'Profile Updated!')
+                profile.save()
+        else:
+            profile = EditUserProfileForm(instance = request.user)
+        return render(request, 'profile.html', {'name': request.user, 'form': profile})
+    else:
+        return HttpResponseRedirect('/login/')
+    
     

@@ -1,6 +1,6 @@
 from django import forms
 from .models import BookSearch
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.models import User
 
 class BookSearchForm(forms.ModelForm):
@@ -29,3 +29,12 @@ class CreateUserForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'password1', 'password2']
+
+
+class EditUserProfileForm(UserChangeForm):
+    password = None
+
+    class meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email', 'last_login', 'date_joined']
+        labels = {'email' : 'Email'}
