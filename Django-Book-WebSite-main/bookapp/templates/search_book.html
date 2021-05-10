@@ -6,7 +6,10 @@
 
 {% block content %}
 <div class = 'container'>
-    <div class = 'row'><h4>Searched Book</h4></div>
+  <h3 style="text-align: center; color: royalblue;"><strong>Search results:</strong></h3>
+    <div class = 'row'>
+      
+      <h4>{{searched_books}}</h4></div>
     <div class = 'row'>
         {% if searched_books %}
        {% for book in searched_books %}
