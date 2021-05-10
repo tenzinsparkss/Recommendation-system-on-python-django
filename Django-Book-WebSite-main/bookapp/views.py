@@ -1,12 +1,14 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Book, Category, Myrating
 from django.contrib.auth.forms import UserCreationForm
 from  .forms import CreateUserForm
+from django.db.models import Q
 from django.contrib import messages
 from django.contrib.auth.models import User, auth
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+
 
 
 # Create your views here.
@@ -35,21 +37,28 @@ def book_detail(request, slug):
     book = Book.objects.get(slug = slug)
     book_category = book.category.first()
     similar_books = Book.objects.filter(category__name__startswith = book_category)
-    #Rating
+    
+    books = get_object_or_404(Book, slug= slug)
+    #Rating a book
     if request.method == "POST":
         rate = request.POST['rating']
         ratingObject = Myrating()
         ratingObject.user = request.user
-        ratingObject.book = books
-        ratingObject.rating = ratings
+        ratingObject.books = books
+        ratingObject.ratings = rate
+        # ratingObject.date = DateTimeField
         ratingObject.save()
-        messages.success(request, "Thanks for rating.")
+        # messages.success(request, "Thanks for rating.")
+
         return redirect('home')
+
     return render(request, 'book_detail.html', {'book': book, 'similar_books': similar_books})
 
+#Search
+@login_required(login_url='login')
 def search_book(request):
     searched_books = Book.objects.filter(title__icontains = request.POST.get('name_of_book'))
-    return render(request, 'search_book.html', {'searched_books':searched_books})
+    return render(request, 'search_book.html', {'searched_books': searched_books})
 
 
 # User registration

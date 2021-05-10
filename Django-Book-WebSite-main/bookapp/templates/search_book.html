@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
+
 {% block title %}
-<title>Book Site | Searched Books</title>
+<title>Book Site | Search books</title>
 {% endblock %}
 
 {% block content %}
@@ -22,7 +23,7 @@
       {% endfor %}
       {% else %}
       <div class = 'row'>
-          <h3>Book Not Available! Check Back Later</h3>
+          <h3>Book is not available! Check Back Later</h3>
       </div>
       {% endif %}
       

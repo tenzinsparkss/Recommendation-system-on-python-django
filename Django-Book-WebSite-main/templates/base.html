@@ -15,7 +15,22 @@
     <link rel = 'stylesheet' href ="{% static 'css/home.css' %}">
     <link rel = 'stylesheet' href ="{% static 'css/book_detail.css' %}">
     <link rel = 'stylesheet' href = "{% static 'uikit/css/uikit.css' %}">
-    
+
+    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css' >    
+    <style type="text/css">
+      .thumbnail p, .thumbnail h4 {
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            }
+      .star-rating {
+          line-height:32px;
+          font-size:1.25em;
+          }
+
+.star-rating .fa-star{color: yellow;}
+      
+  </style>
 </head>
 <body>
 
@@ -118,6 +133,43 @@
 <!-- JavaScript Bundle with Popper -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
 
-    
+
+<!-- For ratings - Jquery -->
+<script type="text/javascript" src="{%static 'web/js/bootstrap.min.js'%}"></script>
+<script type="text/javascript" src="{% static 'web/js/jquery.min.js' %}"></script>
+<script type="text/javascript">
+  var $star_rating = $('.star-rating .fa');
+
+  var SetRatingStar = function() {
+      return $star_rating.each(function() {
+      if (parseInt($star_rating.siblings('input.rating-value').val()) >= parseInt($(this).data('rating'))) {
+          return $(this).removeClass('fa-star-o').addClass('fa-star');
+      } else {
+      return $(this).removeClass('fa-star').addClass('fa-star-o');
+      }
+      });
+      };
+
+  $star_rating.on('click', function() {
+  $star_rating.siblings('input.rating-value').val($(this).data('rating'));
+  return SetRatingStar();
+  });
+
+  SetRatingStar();
+  $(document).ready(function() {
+
+  });
+      
+</script>
+<script type="text/javascript">
+  function validateForm(){
+  var x = document.forms["ratingForm"]["rating"].value;
+  if(x=="0"){
+      alert("Please provide ratings on book");
+      return false;
+  }
+  }
+</script>
+
 </body>
 </html> 

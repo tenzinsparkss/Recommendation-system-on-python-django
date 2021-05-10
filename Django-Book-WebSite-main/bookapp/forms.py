@@ -9,7 +9,7 @@ class BookSearchForm(forms.ModelForm):
     }))
     class Meta:
         model = BookSearch
-        fields = ['name_of_book',]
+        fields = ['name_of_book']
 
 class CreateUserForm(UserCreationForm):
     username = forms.CharField(max_length = 100, widget = forms.TextInput(attrs={
