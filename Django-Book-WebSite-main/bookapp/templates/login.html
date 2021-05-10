@@ -55,15 +55,15 @@
                     </div>
             				
 					<div class="wrap-input100 validate-input m-b-16" data-validate = "Password is required">
-						<input class="input100" type="password" name="password" placeholder="Password">
+						<input class="input100" type="password" id="reset_pass1" name="password" placeholder="Password">
 						<span class="focus-input100"></span>
                     </div>
              
 					<div class="flex-sb-m w-full p-t-3 p-b-24">
 						<div class="contact100-form-checkbox">
-							<input class="input-checkbox100" id="ckb1" type="checkbox" name="remember-me">
+							<input class="input-checkbox100" id="ckb1" type="checkbox" name="remember-me" onclick="myFunction3()">
 							<label class="label-checkbox100" for="ckb1">
-								Remember me
+								Show Password
 							</label>
 						</div>
 
@@ -75,7 +75,7 @@
 					</div>
 					<div>
 						{% for message in messages %}
-						<p style="color: red; text-size-adjust: 10px;">{{message}} </p>
+						<p style="color: red; font-size: 20px;">{{message}} </p>
 						{% endfor %}
 					</div>
 
@@ -115,6 +115,19 @@
 	<script src="{% static 'vendor/countdowntime/countdowntime.js' %}"></script>
 <!--===============================================================================================-->
 	<script src="{% static 'js/main.js' %}"></script>
+
+
+<script>
+	function myFunction3() {
+  var x = document.getElementById("reset_pass1");
+  if (x.type === "password") {
+    x.type = "text";
+  } else {
+    x.type = "password";
+  }
+}
+
+</script>
 
 </body>
 </html>
