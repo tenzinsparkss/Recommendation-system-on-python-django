@@ -1,0 +1,28 @@
+{% block content %}
+<div class="container-fluid">
+	<h2>Recommendations for you</h2>
+</div>
+<hr>
+<br>
+
+	<div class="container-fluid">
+
+    <!-- Movie list -->
+    <div class="row">
+            {% if book_list %}
+                {% for book in book_list %}
+                    <div class="col-sm-2 col-md-2 ">
+                        <div class="thumbnail" style="border-radius: 22px 22px 22px 22px;">
+                            <center><h4>{{book.title}}</h4></center>
+                            <a href="{% url 'book_detail' book.slug %}">
+                                <img src="{{book.cover_image.url}}" class="img-responsive" style="border-radius: 22px 22px 22px 22px;">
+                            </a>
+<!--                            <center><h5>{{movie.genre}}</h5></center>-->
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+</div>
+{% endblock %}
