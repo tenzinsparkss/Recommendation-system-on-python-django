@@ -7,49 +7,78 @@
 
 {% block content %}
 <head>
-	<title>Register</title>
+	<title>User Profile</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-<!--===============================================================================================-->	
+
 	<link rel="icon" type="image/png" href="{% static 'images/icons/favicon.ico' %}"/>
-<!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
-<!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="{% static 'fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}">
-<!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="{% static 'fonts/Linearicons-Free-v1.0.0/icon-font.min.css' %}">
-<!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="{% static 'vendor/animate/animate.css' %}">
-<!--===============================================================================================-->	
 	<link rel="stylesheet" type="text/css" href="{% static 'vendor/css-hamburgers/hamburgers.min.css' %}">
-<!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="{% static 'vendor/animsition/css/animsition.min.css' %}">
-<!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="{% static 'vendor/select2/select2.min.css' %}">
-<!--===============================================================================================-->	
 	<link rel="stylesheet" type="text/css" href="{% static 'vendor/daterangepicker/daterangepicker.css' %}">
-<!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="{% static 'css/util.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
-<!--===============================================================================================-->
 </head>
-
-
-{% if messages %}
-    {% for message in messages %}
-        <small {% if messages.tages %} class="{{messages.tags}}" {% endif %}>{{message}}</small>
-    {% endfor s%}
-{% endif %}
 
 <div class="limiter">
     <div class="container-login100">
         <div class="wrap-login100 p-t-50 p-b-90">
-<form action="" method="POST" novalidate class="login100-form validate-form flex-sb flex-w">
-    <span class="login100-form-title p-b-51"></span>
-    {% csrf_token %}
+
     <span class="login100-form-title p-b-51">
-        User Profile - Welcome {{name.username}}
+        Your Profile
     </span>
+    
+    <span class="login100-form-title p-b-51">
+        Welcome {{user.username}}
+    </span>
+    
+
+<!-- User Profile -->
+    <p style="font-size: 24px;"><strong>Username: {{user.username}}</strong></p>
+    <p style="font-size: 24px;"><strong> First Name: {{user.first_name}}</strong></p>
+    <p style="font-size: 24px;"><strong> Last Name: {{user.last_name}}</strong></p>
+    <p style="font-size: 24px;"><strong> Email: {{user.email}}</strong></p>
+    <p style="font-size: 24px;"><strong> Date joined: {{user.date_joined}}</strong></p>
+    <p style="font-size: 24px;"><strong> Last login: {{user.last_login}}</strong></p>
+    <p style="font-size: 24px;"><strong> Active: {{user.is_active}}</strong></p>
+    <br>
+
+    
+    {% if messages %}
+        {% for message in messages %}
+        <div style="font-size: 20px; color: coral;"><p {% if messages.tages %} class="{{messages.tags}}"  {% endif %}>{{message}}</p></div>
+        {% endfor s%}
+    {% endif %}
+    
+    <br>
+
+    <a href="{% url 'edit_profile' %}"><button type="submit" class="login100-form-btn">Edit Profile</button></a>
+
+    <br>
+    <a href="{% url 'home' %}" class="txt1" style="text-align: right;">go back to home</a>
+    
+</div>
+</div>
+</div>
+
+
+
+<!-- <div class="container">
+    <form method="POST" class="row">
+        {% csrf_token %}
+        <label class="col-lg-4"></label>
+        <div style="text-align: center;">
+
+        </div>
+    </form>
+</div> -->
+
+
+
     <!-- {% if form.non_field_errors %}
         {% for error in form.non_field_errors %}
             <p>{{error}}</p>
@@ -59,9 +88,9 @@
     {% for profile in form %} -->
     <!-- {{profile.label_tag}} {{profile}} {{profile.errors | striptags}} -->
 
-    <div class="wrap-input100 validate-input m-b-16" data-validate = "Username is required">
-        <input  type="text" class="input100" name="username" placeholder="Username" value="{{name.username}}">
-        
+    <!-- <div class="wrap-input100 validate-input m-b-16" data-validate = "Username is required">
+        <input type="text" class="input100" name="{{user.username}}" placeholder="Username" value="{{user.username}}">
+        <p>{{user.username}}</p>
         <span class="focus-input100"></span>
     </div>
 
@@ -98,12 +127,12 @@
 
     <!-- {% endfor %} -->
 
-    <div class="container-login100-form-btn m-t-17">
-        <button class="login100-form-btn" type="submit" onclick="myFunction()">
-            save
+    <!-- <div class="container-login100-form-btn m-t-17">
+        <a href="{% url 'edit_profile' %}"></a><button class="login100-form-btn" type="submit">
+            Edit Profile
         </button>
-    </div> 
-</form>
+    </div>  -->
+
 
 <!--===============================================================================================-->
 <script src="{% static 'vendor/jquery/jquery-3.2.1.min.js' %}"></script>

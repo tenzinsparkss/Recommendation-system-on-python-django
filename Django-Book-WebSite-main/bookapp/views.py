@@ -141,16 +141,42 @@ def index(request):
 #User profile
 @login_required(login_url='login')
 def profile_page(request):
-    if request.user.is_authenticated:
-        if request.method == "POST":
-            profile = EditUserProfileForm(request.POST, instance = request.user)
-            if profile.is_valid():
-                messages.success(request, 'Profile Updated!')
-                profile.save()
-        else:
-            profile = EditUserProfileForm(instance = request.user)
-        return render(request, 'profile.html', {'name': request.user, 'form': profile})
+    if request.user.is_authenticated == False:
+        return redirect('login')
+    user = User.objects.all().get(id = request.user.id)
+    print(f"Request user ID = {request.user.id}")
+
+    return render(request, 'profile.html')
+
+
+def edit_profile(request):
+    if request.method == "POST":
+        user = User.objects.get(id = request.user.id)
+        name = request.POST.get('username')
+        fname = request.POST.get('first_name')
+        lname = request.POST.get('last_name')
+        user.username = name
+        user.first_name = fname
+        user.last_name = lname
+        user.save()
+
+        messages.success(request, ("Your name has been edited."))
+        return redirect('profile')
     else:
-        return HttpResponseRedirect('/login/')
+        update_name = User.objects.get(id = request.user.id)
+        return render(request, 'edit_profile.html', {'update_name' : update_name})
+
+
+    # if request.user.is_authenticated:
+    #     if request.method == "POST":
+    #         profile = EditUserProfileForm(request.POST, instance = request.user)
+    #         if profile.is_valid():
+    #             messages.success(request, 'Profile Updated!')
+    #             profile.save()
+    #     else:
+    #         profile = EditUserProfileForm(instance = request.user)
+    #     return render(request, 'profile.html', {'name': request.user, 'form': profile})
+    # else:
+    #     return HttpResponseRedirect('/login/')
     
     
