@@ -13,6 +13,5 @@ urlpatterns = [
     path('logout', views.logout_user, name = 'logout'),
     path('profile', views.profile_page, name = 'profile'),
     path('edit_profile', views.edit_profile, name = 'edit_profile'),
-    path('recommend', views.recommend, name = 'recommend'),
     path('', views.index, name = 'index')
 ]

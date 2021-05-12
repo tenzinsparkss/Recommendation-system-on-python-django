@@ -8,8 +8,7 @@ from django.contrib.auth.models import User, auth
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from django.db.models import Case, When
-import pandas as pd
+
 
 
 # Create your views here.
@@ -41,38 +40,19 @@ def book_detail(request, slug):
     
     books = get_object_or_404(Book, slug= slug)
     #Rating a book
-    books = Book.objects.filter(slug = slug).values('id')[0]
     if request.method == "POST":
         rate = request.POST['rating']
-        if Myrating.objects.all().values().filter(books_id = books['id'], user = request.user):
-            Myrating.objects.all().values().filter(books_id=books['id'], user=request.user).update(ratings = rate)
-        else:
-            ratingObject = Myrating()
-            ratingObject.user = request.user
-            ratingObject.books = book
-            ratingObject.ratings = rate
-            # ratingObject.date = DateTimeField
-            ratingObject.save()
-
-        return redirect('home')
-        
-    out = list(Myrating.objects.filter(user=request.user.id).values())
-    book_rating = 0
-    rate_flag = False
-    # books = Book.objects.filter(slug = slug).values('id')[0]
-    # print(books[0])
-    for each in out:
-        print(each)
-        print(slug)
-        if each['books_id'] == books['id']:
-            book_rating = each['ratings']
-            rate_flag = True
-            break
+        ratingObject = Myrating()
+        ratingObject.user = request.user
+        ratingObject.books = books
+        ratingObject.ratings = rate
+        # ratingObject.date = DateTimeField
+        ratingObject.save()
         # messages.success(request, "Thanks for rating.")
 
-        
+        return redirect('home')
 
-    return render(request, 'book_detail.html', {'book': book, 'similar_books': similar_books, 'book_rating': book_rating, 'rate_flag' : rate_flag})
+    return render(request, 'book_detail.html', {'book': book, 'similar_books': similar_books})
 
 #Search
 @login_required(login_url='login')
@@ -186,51 +166,17 @@ def edit_profile(request):
         update_name = User.objects.get(id = request.user.id)
         return render(request, 'edit_profile.html', {'update_name' : update_name})
 
-#Recommend starts here...
 
-# To get similar movies based on User rating
-def get_similar(book_name, rating, corrMatrix):
-    similar_ratings = corrMatrix[book_name]*(rating-2.5)
-    similar_ratings = similar_ratings.sort_values(ascending = False)
-    return similar_ratings
-
-# Recommendation Algorithm
-def recommend(request):
-    if not request.user.is_authenticated:
-        return redirect('login')
-    if not request.user.is_active:
-        raise Http404
+    # if request.user.is_authenticated:
+    #     if request.method == "POST":
+    #         profile = EditUserProfileForm(request.POST, instance = request.user)
+    #         if profile.is_valid():
+    #             messages.success(request, 'Profile Updated!')
+    #             profile.save()
+    #     else:
+    #         profile = EditUserProfileForm(instance = request.user)
+    #     return render(request, 'profile.html', {'name': request.user, 'form': profile})
+    # else:
+    #     return HttpResponseRedirect('/login/')
     
-    book_rating = pd.DataFrame(list(Myrating.objects.all().values()))
-
-    new_user = book_rating.user_id.unique().shape[0]
-    current_user_id = request.user.id
-
-    # if new user has not rated any movie 
-    if current_user_id > new_user:
-        book = Book.objects.get(id = 19)
-        q = Myrating(user = request.user, books = book, ratings = 0)
-        q.save()
-    
-    userRatings = book_rating.pivot_table(index = ['user_id'], columns = ['books_id'], values = 'ratings')
-    userRatings = userRatings.fillna(0, axis = 1)
-    corrMatrix = userRatings.corr(method = 'pearson')
-
-    user = pd.DataFrame(list(Myrating.objects.filter(user = request.user).values())).drop(['user_id', 'id','date'], axis = 1)
-    user_filtered = [tuple(x) for x in user.values]
-    book_id_watched = [each[0] for each in user_filtered]
-
-    similar_books = pd.DataFrame()
-    print(user_filtered)
-    for book, rating in user_filtered:
-        similar_books = similar_books.append(get_similar(book, rating, corrMatrix), ignore_index = True)
-
-    books_id = list(similar_books.sum().sort_values(ascending = False).index)
-    books_id_recommend = [each for each in books_id if each not in book_id_watched]
-    preserved = Case(*[When(pk = pk, then = pos) for pos, pk in enumerate(books_id_recommend)])
-    book_list = list(Book.objects.filter(id__in = books_id_recommend).order_by(preserved)[:10])
-
-    context = {'book_list' : book_list}
-    return render(request, 'recommend.html', context)
-
     

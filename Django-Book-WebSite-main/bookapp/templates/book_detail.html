@@ -48,12 +48,7 @@
                             <span class="fa fa-star-o" data-rating="3"></span>
                             <span class="fa fa-star-o" data-rating="4"></span>
                             <span class="fa fa-star-o" data-rating="5"></span>
-                        {% if rate_flag %}
-                            <input type="hidden" name="rating" class="rating-value" value="{{book_rating}}">
-                        {% else %}
-                        <input type="hidden" name="rating" class="rating-value" value="0">
-                       {% endif %}
-                       
+                       <input type="hidden" name="rating" class="rating-value" value="0" >
                         {% csrf_token %}
         
                         </div>
