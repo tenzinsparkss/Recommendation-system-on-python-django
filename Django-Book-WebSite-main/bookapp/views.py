@@ -49,7 +49,7 @@ def book_detail(request, slug):
         else:
             ratingObject = Myrating()
             ratingObject.user = request.user
-            ratingObject.books = books
+            ratingObject.books = book
             ratingObject.ratings = rate
             # ratingObject.date = DateTimeField
             ratingObject.save()
