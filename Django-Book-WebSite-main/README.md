@@ -1,2 +1,3 @@
-# Recommendation system on python django
- Recommendation System
+# Book Recommendation system Using Machine Learning 
+## Web based application on Django
+
