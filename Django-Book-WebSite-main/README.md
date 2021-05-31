@@ -47,6 +47,7 @@ I have used user based collaborative filtering in this project.
 ### Website Preview
 * Dashboard
 ![GitHub Logo](/Website_preview/Dashboard.png)
+Format: ![Alt Text](url)
 <img src="Website_preview/Dashboard.png" width="900">
 
 
