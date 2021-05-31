@@ -45,6 +45,8 @@ I have used user based collaborative filtering in this project.
 * [License] (https://www.wlv.ac.uk/its/facilities/regulations-and-policies/software-licensing--copyright/)
 
 ### Website Preview
+* Dashboard
+<img src="website_preview/Dashboard.png" width="900">
 
 
 
