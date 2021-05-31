@@ -3,13 +3,10 @@
 {% load static %}
 
 {% block title %}
-     <title>Book Site | Book Detail </title>
+     <title>Book Site | Book Details </title>
 {% endblock %}
 
 {% block content %}
-
-
-
 
 <div class = 'container' style = 'border: 2px solid black; width: 80%'>
     <div class = 'row' style = 'border: 2px solid black'>
@@ -26,7 +23,7 @@
                 <h3>Abstract:</h3>
                 <h4>{{book.summary}}</h4>
                 
-                <h5>Please rate to get recommendation</h5>
+                <h5>Please rate to get recommendations</h5>
                 <br>
                 {% if messages %}
                 <ul class="messages">
@@ -48,7 +45,12 @@
                             <span class="fa fa-star-o" data-rating="3"></span>
                             <span class="fa fa-star-o" data-rating="4"></span>
                             <span class="fa fa-star-o" data-rating="5"></span>
-                       <input type="hidden" name="rating" class="rating-value" value="0" >
+                        {% if rate_flag %}
+                            <input type="hidden" name="rating" class="rating-value" value="{{book_rating}}">
+                        {% else %}
+                        <input type="hidden" name="rating" class="rating-value" value="0">
+                       {% endif %}
+                       
                         {% csrf_token %}
         
                         </div>
@@ -73,7 +75,7 @@
 
 <div class = 'container'>
     <div class = 'row'>
-        <h4>Similar Books</h4>            
+        <h4>Books with Similar Mood</h4>            
     </div>
     <div class = 'row'>
         {% for similar_book in similar_books %}

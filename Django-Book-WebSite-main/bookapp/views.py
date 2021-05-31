@@ -8,7 +8,8 @@ from django.contrib.auth.models import User, auth
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-
+from django.db.models import Case, When
+import pandas as pd
 
 
 # Create your views here.
@@ -40,22 +41,40 @@ def book_detail(request, slug):
     
     books = get_object_or_404(Book, slug= slug)
     #Rating a book
+    books = Book.objects.filter(slug = slug).values('id')[0]
     if request.method == "POST":
         rate = request.POST['rating']
-        ratingObject = Myrating()
-        ratingObject.user = request.user
-        ratingObject.books = books
-        ratingObject.ratings = rate
-        # ratingObject.date = DateTimeField
-        ratingObject.save()
-        # messages.success(request, "Thanks for rating.")
+        if Myrating.objects.all().values().filter(books_id = books['id'], user = request.user):
+            Myrating.objects.all().values().filter(books_id=books['id'], user=request.user).update(ratings = rate)
+        else:
+            ratingObject = Myrating()
+            ratingObject.user = request.user
+            ratingObject.books = book
+            ratingObject.ratings = rate
+            # ratingObject.date = DateTimeField
+            ratingObject.save()
 
         return redirect('home')
+        
+    out = list(Myrating.objects.filter(user=request.user.id).values())
+    book_rating = 0
+    rate_flag = False
+    # books = Book.objects.filter(slug = slug).values('id')[0]
+    # print(books[0])
+    for each in out:
+        print(each)
+        print(slug)
+        if each['books_id'] == books['id']:
+            book_rating = each['ratings']
+            rate_flag = True
+            break
+        # messages.success(request, "Thanks for rating.")
 
-    return render(request, 'book_detail.html', {'book': book, 'similar_books': similar_books})
+        
+
+    return render(request, 'book_detail.html', {'book': book, 'similar_books': similar_books, 'book_rating': book_rating, 'rate_flag' : rate_flag})
 
 #Search
-@login_required(login_url='login')
 def search_book(request):
     searched_books = Book.objects.filter(title__icontains = request.POST.get('name_of_book'))
     return render(request, 'search_book.html', {'searched_books': searched_books})
@@ -63,31 +82,54 @@ def search_book(request):
 
 # User registration
 def registerView(request):
-     if request.method == 'POST':
+    if request.method == 'POST':
         first_name = request.POST['first_name']
         last_name = request.POST['last_name']
         email = request.POST['email']
         username = request.POST['username']
         password1 = request.POST['password1']
         password2 = request.POST['password2']
+        special_characters = "!@#$%^&*()-+?_=,<>/"
 
         if password1 == password2:
             if User.objects.filter(username = username).exists():
-                messages.info(request, "Try other new USERNAME!!")
+                messages.error(request, "Username already exists. Please choose different username.")
                 return redirect('register')
             elif User.objects.filter(email = email).exists():
-                messages.info(request, "System has detected existing an email that you have entered.")
+                messages.error(request, "Please try another email, The given email is already registered.")
                 return redirect('register')
-            else:    
+            elif len(username) > 10:
+                messages.error(request, "Username must be under 10 characters.")
+                return redirect('register')
+            elif not username.isalnum():
+                messages.error(request, "Username should only contain letters and numbers.")
+                return redirect('register')
+            elif len(password1) <= 8:
+                messages.error(request, "Password must contain more than 8 characters.")
+                return redirect('register')
+            elif not first_name.isalpha():
+                messages.error(request, "Name must not contain numbers.")
+                return redirect('register')
+            elif not last_name.isalpha():
+                messages.error(request, "Name must not contain numbers.")
+                return redirect('register')
+            else:
                 user = User.objects.create_user(username = username, password = password1, email = email, first_name = first_name, last_name = last_name)
                 user.save()
                 print("User is created")
+                messages.success(
+                    request,
+                    "Your account has been successfully created. Please login to continue.",
+                )
+
         else:
-            messages.info(request, "System has detected unmatched passwords.")
+            messages.error(request, 'Password not matching.')
             return redirect('register')
-        return redirect('login')    
-     else:
-        return render(request, 'register.html', {'register': registerView})
+        return redirect('login')
+     
+    else:
+        return render(request, "register.html", {'register': registerView})
+
 
 #User login page
 def login_page(request):
@@ -148,7 +190,7 @@ def profile_page(request):
 
     return render(request, 'profile.html')
 
-
+#Edit Profile
 def edit_profile(request):
     if request.method == "POST":
         user = User.objects.get(id = request.user.id)
@@ -166,17 +208,51 @@ def edit_profile(request):
         update_name = User.objects.get(id = request.user.id)
         return render(request, 'edit_profile.html', {'update_name' : update_name})
 
+#Recommend starts here...
 
-    # if request.user.is_authenticated:
-    #     if request.method == "POST":
-    #         profile = EditUserProfileForm(request.POST, instance = request.user)
-    #         if profile.is_valid():
-    #             messages.success(request, 'Profile Updated!')
-    #             profile.save()
-    #     else:
-    #         profile = EditUserProfileForm(instance = request.user)
-    #     return render(request, 'profile.html', {'name': request.user, 'form': profile})
-    # else:
-    #     return HttpResponseRedirect('/login/')
+# To get similar movies based on User rating
+def get_similar(book_name, rating, corrMatrix):
+    similar_ratings = corrMatrix[book_name]*(rating-2.5)
+    similar_ratings = similar_ratings.sort_values(ascending = False)
+    return similar_ratings
+
+# Recommendation Algorithm
+def recommend(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    if not request.user.is_active:
+        raise Http404
     
+    book_rating = pd.DataFrame(list(Myrating.objects.all().values()))
+
+    new_user = book_rating.user_id.unique().shape[0]
+    current_user_id = request.user.id
+
+    # if new user has not rated any movie 
+    if current_user_id > new_user:
+        book = Book.objects.get(id = 19)
+        q = Myrating(user = request.user, books = book, ratings = 0)
+        q.save()
+    
+    userRatings = book_rating.pivot_table(index = ['user_id'], columns = ['books_id'], values = 'ratings')
+    userRatings = userRatings.fillna(0, axis = 1)
+    corrMatrix = userRatings.corr(method = 'pearson')
+
+    user = pd.DataFrame(list(Myrating.objects.filter(user = request.user).values())).drop(['user_id', 'id','date'], axis = 1)
+    user_filtered = [tuple(x) for x in user.values]
+    book_id_watched = [each[0] for each in user_filtered]
+
+    similar_books = pd.DataFrame()
+    print(user_filtered)
+    for book, rating in user_filtered:
+        similar_books = similar_books.append(get_similar(book, rating, corrMatrix), ignore_index = True)
+
+    books_id = list(similar_books.sum().sort_values(ascending = False).index)
+    books_id_recommend = [each for each in books_id if each not in book_id_watched]
+    preserved = Case(*[When(pk = pk, then = pos) for pos, pk in enumerate(books_id_recommend)])
+    book_list = list(Book.objects.filter(id__in = books_id_recommend).order_by(preserved)[:10])
+
+    context = {'book_list' : book_list}
+    return render(request, 'recommend.html', context)
+
     

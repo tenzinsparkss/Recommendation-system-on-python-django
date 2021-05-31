@@ -5,32 +5,29 @@
 {% endblock %}
 
 {% block content %}
-<div class = 'container'>
+<div class = 'container-fluid'>
   <h3 style="text-align: center; color: royalblue;"><strong>Search results:</strong></h3>
+</div>
+  <!-- Search details -->
+  <div class = 'container-fluid'>
     <div class = 'row'>
-      
-      <h4>{{searched_books}}</h4></div>
-    <div class = 'row'>
+      <h4>{{searched_books.title}}</h4>
         {% if searched_books %}
-       {% for book in searched_books %}
-      <div class = 'col-6 col-sm-4 col-md-4 col-lg-3 col-xl-2'>
-        <a href = "">
-          <div>
-            <div class="uk-card uk-card-default uk-card-body"> 
-                <img src = "{{book.cover_image.url}}">
-               
-            </div>
-        </div>
-      </a>
-      </div>
-      {% endfor %}
-      {% else %}
-      <div class = 'row'>
-          <h3>Book is not available! Check Back Later</h3>
-      </div>
-      {% endif %}
-      
-
+          {% for book in searched_books %}
+          <div class="col-sm-2 col-md-2 ">
+            <div class="thumbnail" style="border-radius: 22px 22px 22px 22px;">
+              <hr>
+              <center><h4 style="color: black;"><strong>{{book.title}}</strong></h4></center>
+              <a href="{% url 'book_detail' book.slug %}"></a>
+                <img src = "{{book.cover_image.url}}" class="img-responsive" style="border-radius: 22px 22px 22px 22px;">
+              </a>
+              </div>
+          </div>  
+    {% endfor %}
+    {% else %}
+    <div class = 'row'>
+      <h3>Book is not available! Pleas, check back later</h3>
     </div>
+    {% endif %}
   </div>
-  {% endblock %}
+{% endblock %}
