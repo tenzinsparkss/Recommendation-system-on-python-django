@@ -41,4 +41,9 @@ filtering:
 
 I have used user based collaborative filtering in this project.
 
+###### Licence under University of Wolverhamption
+* [License] (https://www.wlv.ac.uk/its/facilities/regulations-and-policies/software-licensing--copyright/)
+
+
+
 
