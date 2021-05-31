@@ -9,6 +9,24 @@ pip install -r requirements.txt
 
 ###### Run server locally
     * $ python manage.py runserver
+    * Please go to Localhost:8000
+
+###### Key Features
+    * There are two actors: User and Admin
+    * It has CRUD operations
+    * User can see dashboard
+    * User can register by email address
+    * User can search through books and check its information
+    * User can set ratings on the books
+    * User can login into the system
+    * User will get book recommendations by rating the book items
+    * Recommendation system is based recommendation algorithm called Collaborative Filtering
+    * It suggests new books or other books on the ratings provided by user
+
+## What is Recommender system?
+* Recommended systems are powerful new technology and it helps users to find items 
+which they want to buy. A recommendation system is broadly used to recommend 
+products to the end users that are most appropriate.
 
 
 
