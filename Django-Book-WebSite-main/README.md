@@ -46,7 +46,7 @@ I have used user based collaborative filtering in this project.
 
 ### Website Preview
 * Dashboard
-<img src="website_preview/Dashboard.png" width="900">
+<img src="Website_preview/Dashboard.png" width="900">
 
 
 
