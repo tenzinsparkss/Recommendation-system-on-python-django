@@ -2,7 +2,7 @@
 ## Python Django based Book Recommendation System
 
 ###### Installations
-pip install -r requirements.txt
+    > pip install -r requirements.txt
 
 ###### Clone
     * Clone this repo to your local machine.
