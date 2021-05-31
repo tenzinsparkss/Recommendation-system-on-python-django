@@ -42,13 +42,7 @@ filtering:
 I have used user based collaborative filtering in this project.
 
 ### License under University of Wolverhamptom
-* [License] (https://www.wlv.ac.uk/its/facilities/regulations-and-policies/software-licensing--copyright/)
-
-### Website Preview
-* Dashboard
-![GitHub Logo](/Website_preview/Dashboard.png)
-Format: ![Alt Text](url)
-<img src="/Website_preview/Dashboard.PNG" width="900">
+- **[License](https://www.wlv.ac.uk/its/facilities/regulations-and-policies/software-licensing--copyright/)**
 
 
 
