@@ -35,9 +35,9 @@ and items. The similarity of items is determined by the similarity of the rating
 items by the users who have rated both items. 
 There are two types of collaborative 
 filtering:
-* User-based, which measures the similarity between target users and other users.
-* Item-based, which measures the similarity between the items that target users’ rate or 
-interact with and other items.
+    * User-based, which measures the similarity between target users and other users.
+    * Item-based, which measures the similarity between the items that target users’ rate or 
+    interact with and other items.
 
 I have used user based collaborative filtering in this project.
 
